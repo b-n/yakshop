@@ -11,6 +11,7 @@
 #![warn(unused_qualifications)]
 #![warn(variant_size_difference)]
 
+#[cfg(test)]
 #[macro_use]
 extern crate approx;
 
@@ -18,11 +19,12 @@ mod shop;
 mod yak;
 
 use clap::Parser;
-use shop::Shop;
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 use std::path::PathBuf;
-use yak::Yak;
+
+use shop::Shop;
+use yak::{Products, Yak};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]

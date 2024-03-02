@@ -1,19 +1,17 @@
-use crate::Yak;
-use crate::YakShopError;
 use serde::Deserialize;
 use std::fmt::{self, Display, Formatter};
 use std::path::PathBuf;
+
+use crate::{Products, Yak, YakShopError};
 
 #[derive(Default, Deserialize, Debug)]
 pub struct Shop {
     #[serde(rename = "$value")]
     yaks: Vec<Yak>,
     #[serde(skip_deserializing)]
-    milk: f64,
-    #[serde(skip_deserializing)]
-    skins: usize,
-    #[serde(skip_deserializing)]
     pub elapsed_days: u32,
+    #[serde(skip_deserializing)]
+    pub produced_products: Products,
 }
 
 impl Display for Shop {
@@ -21,10 +19,10 @@ impl Display for Shop {
         write!(
             f,
             r#"In Stock:
-    {} liters of milk
+    {:.3} liters of milk
     {} skins of wool
 Herd:"#,
-            self.milk, self.skins
+            self.produced_products.milk, self.produced_products.wool
         )?;
 
         for yak in &self.yaks {
@@ -56,7 +54,10 @@ impl TryFrom<&PathBuf> for Shop {
 impl Shop {
     pub fn step_days(&mut self, days: u32) {
         for yak in &mut self.yaks {
-            yak.step_days(days);
+            // Add the products if the yak is still producing products
+            if let Some(products) = yak.step_days(days) {
+                self.produced_products += products;
+            }
         }
 
         self.elapsed_days += days;

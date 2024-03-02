@@ -2,6 +2,10 @@ use serde::de::Deserializer;
 use serde::Deserialize;
 use std::fmt::{self, Display, Formatter};
 
+mod products;
+
+pub use products::Products;
+
 const DAYS_IN_YAK_YEAR: f64 = 100.0;
 
 /// A yak lives for 10 years, there are 100 days in a yak year.
@@ -61,12 +65,12 @@ impl Display for Yak {
 }
 
 impl Yak {
-    pub fn step_days(&mut self, days: u32) -> Option<YakProducts> {
+    pub fn step_days(&mut self, days: u32) -> Option<Products> {
         if !self.is_alive() {
             return None;
         }
 
-        let mut products = YakProducts::default();
+        let mut products = Products::default();
 
         for _ in 0..days {
             products.milk += self.produce_milk();
@@ -104,13 +108,6 @@ impl Yak {
     pub fn year_age(&self) -> f64 {
         f64::from(self.age) / DAYS_IN_YAK_YEAR
     }
-}
-
-#[allow(clippy::module_name_repetitions)]
-#[derive(Default)]
-pub struct YakProducts {
-    pub milk: f64,
-    pub wool: u32,
 }
 
 #[cfg(test)]
