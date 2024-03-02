@@ -50,7 +50,7 @@ pub struct Yak {
 
 impl Display for Yak {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{} {} years old", self.name, self.float_age())?;
+        write!(f, "{} {} years old", self.name, self.year_age())?;
 
         if self.age >= MAX_YAK_AGE {
             write!(f, " (dead)")?;
@@ -101,7 +101,7 @@ impl Yak {
         self.age < MAX_YAK_AGE
     }
 
-    pub fn float_age(&self) -> f64 {
+    pub fn year_age(&self) -> f64 {
         f64::from(self.age) / DAYS_IN_YAK_YEAR
     }
 }
