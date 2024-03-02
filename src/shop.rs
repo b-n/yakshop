@@ -12,6 +12,8 @@ pub struct Shop {
     milk: f64,
     #[serde(skip_deserializing)]
     skins: usize,
+    #[serde(skip_deserializing)]
+    pub elapsed_days: u32,
 }
 
 impl Display for Shop {
@@ -48,5 +50,15 @@ impl TryFrom<&PathBuf> for Shop {
         let shop: Shop = serde_xml_rs::from_str(&herd_xml).expect("Could not parse herd.xml file");
 
         Ok(shop)
+    }
+}
+
+impl Shop {
+    pub fn step_days(&mut self, days: u32) {
+        for yak in &mut self.yaks {
+            yak.step_days(days);
+        }
+
+        self.elapsed_days += days;
     }
 }

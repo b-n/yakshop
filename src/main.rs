@@ -30,7 +30,7 @@ pub struct Args {
 
     /// The number of days to run the simulation for.
     #[arg(required = true)]
-    pub days: usize,
+    pub days: u32,
 }
 
 #[derive(Debug)]
@@ -53,9 +53,11 @@ impl Error for YakShopError {}
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
-    let shop = Shop::try_from(&args.herd)?;
+    let mut shop = Shop::try_from(&args.herd)?;
 
-    println!("Day: {}\n\n{shop}", args.days);
+    shop.step_days(args.days);
+
+    println!("Day: {}\n\n{shop}", shop.elapsed_days);
 
     Ok(())
 }
