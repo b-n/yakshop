@@ -28,7 +28,7 @@ pub struct Args {
     #[arg(required = true)]
     pub herd: PathBuf,
 
-    /// The number of days to run the simulation for.
+    /// The number of days to run the simulation for (max: U32_MAX)
     #[arg(required = true)]
     pub days: u32,
 }
@@ -36,6 +36,7 @@ pub struct Args {
 #[derive(Debug)]
 pub enum YakShopError {
     ConfigFileNotFound(PathBuf),
+    ConfigFileParseError(String),
 }
 
 impl Display for YakShopError {
@@ -43,6 +44,9 @@ impl Display for YakShopError {
         match self {
             YakShopError::ConfigFileNotFound(path) => {
                 write!(f, "Config file {} not found", path.to_string_lossy())
+            }
+            YakShopError::ConfigFileParseError(msg) => {
+                write!(f, "Error parsing config file: {msg}")
             }
         }
     }

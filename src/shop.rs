@@ -47,9 +47,9 @@ impl TryFrom<&PathBuf> for Shop {
         let herd_xml =
             std::fs::read_to_string(herd_config).expect("Could not read herd.xml file to string");
 
-        let shop: Shop = serde_xml_rs::from_str(&herd_xml).expect("Could not parse herd.xml file");
-
-        Ok(shop)
+        // TODO: These serde error messages could be a lot nicer
+        serde_xml_rs::from_str(&herd_xml)
+            .map_err(|err| YakShopError::ConfigFileParseError(format!("{err:?}")))
     }
 }
 
@@ -60,5 +60,42 @@ impl Shop {
         }
 
         self.elapsed_days += days;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fixtures_path() -> PathBuf {
+        PathBuf::from("./tests/fixtures")
+    }
+
+    #[test]
+    fn test_try_from_valid_single() {
+        let herd_xml = fixtures_path().join("valid_single.xml");
+        let shop = Shop::try_from(&herd_xml).unwrap();
+        assert_eq!(shop.yaks.len(), 1);
+    }
+
+    #[test]
+    fn test_try_from_valid_multiple() {
+        let herd_xml = fixtures_path().join("valid_multi.xml");
+        let shop = Shop::try_from(&herd_xml).unwrap();
+        assert_eq!(shop.yaks.len(), 3);
+    }
+
+    #[test]
+    fn test_try_from_invalid_age() {
+        let herd_xml = fixtures_path().join("invalid_age.xml");
+        let result = Shop::try_from(&herd_xml);
+        assert!(matches!(result, Err(YakShopError::ConfigFileParseError(_))));
+    }
+
+    #[test]
+    fn test_try_from_invalid_path() {
+        let herd_xml = fixtures_path().join("invalid_path.xml");
+        let result = Shop::try_from(&herd_xml);
+        assert!(matches!(result, Err(YakShopError::ConfigFileNotFound(_))));
     }
 }

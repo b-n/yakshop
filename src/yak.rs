@@ -36,3 +36,38 @@ impl Yak {
         self.age += f64::from(days) / DAYS_IN_YAK_YEAR;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn default_yak() -> Yak {
+        Yak {
+            name: "Yak".to_string(),
+            age: 0.0,
+            age_last_shaved: 0.0,
+        }
+    }
+
+    #[test]
+    fn test_default_yak() {
+        let error_margin = f64::EPSILON;
+        let yak = default_yak();
+        assert_eq!(yak.name, "Yak");
+        assert!(yak.age - 0.0f64 < error_margin);
+        assert!(yak.age_last_shaved - 0.0f64 < error_margin);
+    }
+
+    #[test]
+    fn test_display_alive() {
+        let yak = default_yak();
+        assert_eq!(format!("{yak}"), "Yak 0 years old");
+    }
+
+    #[test]
+    fn test_display_dead() {
+        let mut yak = default_yak();
+        yak.age = 10.1;
+        assert_eq!(format!("{yak}"), "Yak 10.1 years old (dead)");
+    }
+}
