@@ -99,4 +99,26 @@ mod tests {
         let result = Shop::try_from(&herd_xml);
         assert!(matches!(result, Err(YakShopError::ConfigFileNotFound(_))));
     }
+
+    #[test]
+    fn test_13_days() {
+        let herd_xml = fixtures_path().join("valid_multi.xml");
+        let mut shop = Shop::try_from(&herd_xml).unwrap();
+        shop.step_days(13);
+
+        assert_eq!(shop.elapsed_days, 13);
+        assert_ulps_eq!(shop.produced_products.milk, 1104.480);
+        assert_eq!(shop.produced_products.wool, 3);
+    }
+
+    #[test]
+    fn test_14_days() {
+        let herd_xml = fixtures_path().join("valid_multi.xml");
+        let mut shop = Shop::try_from(&herd_xml).unwrap();
+        shop.step_days(14);
+
+        assert_eq!(shop.elapsed_days, 14);
+        assert_ulps_eq!(shop.produced_products.milk, 1188.810);
+        assert_eq!(shop.produced_products.wool, 4);
+    }
 }
