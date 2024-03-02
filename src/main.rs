@@ -11,6 +11,9 @@
 #![warn(unused_qualifications)]
 #![warn(variant_size_difference)]
 
+#[macro_use]
+extern crate approx;
+
 mod shop;
 mod yak;
 

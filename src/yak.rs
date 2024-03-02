@@ -7,6 +7,9 @@ const DAYS_IN_YAK_YEAR: f64 = 100.0;
 /// A yak lives for 10 years, there are 100 days in a yak year.
 const MAX_YAK_AGE: u32 = 1_000;
 
+/// A yak can only be shaved after it is 100 days (1 year) old.
+const MIN_YAK_SHAVE_AGE: u32 = 100;
+
 fn yak_float_years_to_days<'de, D>(deserializer: D) -> Result<u32, D::Error>
 where
     D: Deserializer<'de>,
@@ -47,7 +50,7 @@ pub struct Yak {
 
 impl Display for Yak {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{} {:.2} years old", self.name, self.float_age())?;
+        write!(f, "{} {} years old", self.name, self.float_age())?;
 
         if self.age >= MAX_YAK_AGE {
             write!(f, " (dead)")?;
@@ -58,12 +61,39 @@ impl Display for Yak {
 }
 
 impl Yak {
-    pub fn step_days(&mut self, days: u32) {
+    pub fn step_days(&mut self, days: u32) -> Option<YakProducts> {
         if !self.is_alive() {
-            return;
+            return None;
         }
 
-        self.age += days;
+        let mut products = YakProducts::default();
+
+        for _ in 0..days {
+            // All age calculations are in floating point days.
+            let day_age = f64::from(self.age);
+
+            // milk production decreases by 0.03 units per day
+            let milk_production = 50.0 - (day_age * 0.03);
+            products.milk += milk_production;
+
+            if self.age >= MIN_YAK_SHAVE_AGE {
+                // The next shave date is 8 + (0.01 * age years after the last shave)
+                let next_shave_date: f64 = f64::from(self.age_last_shaved) + 8.0 + (day_age * 0.01);
+                println!(
+                    "age: {}, age_last_shaved: {}, next_shave_date: {}",
+                    self.age, self.age_last_shaved, next_shave_date
+                );
+
+                if day_age >= next_shave_date {
+                    products.wool += 1;
+                    self.age_last_shaved = self.age;
+                }
+            }
+
+            self.age += 1;
+        }
+
+        Some(products)
     }
 
     pub fn is_alive(&self) -> bool {
@@ -73,6 +103,13 @@ impl Yak {
     pub fn float_age(&self) -> f64 {
         f64::from(self.age) / DAYS_IN_YAK_YEAR
     }
+}
+
+#[allow(clippy::module_name_repetitions)]
+#[derive(Default)]
+pub struct YakProducts {
+    pub milk: f64,
+    pub wool: u32,
 }
 
 #[cfg(test)]
@@ -129,5 +166,77 @@ mod tests {
         yak.step_days(1);
         assert_eq!(yak.age, 1000);
         assert!(!yak.is_alive());
+    }
+
+    #[test]
+    fn test_yak_does_not_age_after_death() {
+        let mut yak = default_yak();
+
+        yak.age = 999;
+        assert!(yak.is_alive());
+
+        yak.step_days(1);
+        assert_eq!(yak.age, 1000);
+        assert!(!yak.is_alive());
+
+        yak.step_days(1);
+        assert_eq!(yak.age, 1000);
+        assert!(!yak.is_alive());
+    }
+
+    #[test]
+    fn test_step_days_only_milk() {
+        let mut yak = default_yak();
+        let products = yak.step_days(1).unwrap();
+
+        assert_eq!(yak.age, 1);
+        assert_ulps_eq!(products.milk, 50.0);
+        assert_eq!(products.wool, 0);
+    }
+
+    #[test]
+    fn test_step_days_milk_and_wool() {
+        let mut yak = default_yak();
+        yak.age = MIN_YAK_SHAVE_AGE;
+        let products = yak.step_days(1).unwrap();
+
+        assert_eq!(yak.age, MIN_YAK_SHAVE_AGE + 1);
+        assert_ulps_eq!(products.milk, 47.0);
+        assert_eq!(products.wool, 1);
+    }
+
+    #[test]
+    fn test_two_days_only_milk() {
+        let mut yak = default_yak();
+        let products = yak.step_days(2).unwrap();
+
+        assert_eq!(yak.age, 2);
+        assert_ulps_eq!(products.milk, 50.0 + 49.97);
+        assert_eq!(products.wool, 0);
+    }
+
+    #[test]
+    fn test_two_days_milk_and_wool() {
+        let mut yak = default_yak();
+        yak.age = MIN_YAK_SHAVE_AGE;
+        let products = yak.step_days(2).unwrap();
+
+        assert_eq!(yak.age, MIN_YAK_SHAVE_AGE + 2);
+        assert_ulps_eq!(products.milk, 47.0 + 46.97);
+        assert_eq!(products.wool, 1);
+    }
+
+    #[test]
+    fn test_double_wool() {
+        let mut yak = default_yak();
+        yak.age = MIN_YAK_SHAVE_AGE;
+        // First shave = Yak age 100. (last shave = 0)
+        // Second shave = Yak age 110. (last shave = 100, 8 + 109 * 0.01 = 9.09, there 109 is to
+        //                soon to shave again)
+        // Therefore need 11 days to tick from day 100 to 110 to completion for 2 wools.
+        let products = yak.step_days(11).unwrap();
+
+        assert_eq!(yak.age, MIN_YAK_SHAVE_AGE + 11);
+        assert_eq!(products.wool, 2);
     }
 }
