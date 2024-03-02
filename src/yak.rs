@@ -69,31 +69,32 @@ impl Yak {
         let mut products = YakProducts::default();
 
         for _ in 0..days {
-            // All age calculations are in floating point days.
-            let day_age = f64::from(self.age);
-
-            // milk production decreases by 0.03 units per day
-            let milk_production = 50.0 - (day_age * 0.03);
-            products.milk += milk_production;
-
-            if self.age >= MIN_YAK_SHAVE_AGE {
-                // The next shave date is 8 + (0.01 * age years after the last shave)
-                let next_shave_date: f64 = f64::from(self.age_last_shaved) + 8.0 + (day_age * 0.01);
-                println!(
-                    "age: {}, age_last_shaved: {}, next_shave_date: {}",
-                    self.age, self.age_last_shaved, next_shave_date
-                );
-
-                if day_age >= next_shave_date {
-                    products.wool += 1;
-                    self.age_last_shaved = self.age;
-                }
+            products.milk += self.produce_milk();
+            if self.can_produce_wool() {
+                self.age_last_shaved = self.age;
+                products.wool += 1;
             }
 
             self.age += 1;
         }
 
         Some(products)
+    }
+
+    fn produce_milk(&self) -> f64 {
+        50.0 - (f64::from(self.age) * 0.03)
+    }
+
+    fn can_produce_wool(&self) -> bool {
+        let day_age = f64::from(self.age);
+        if self.age < MIN_YAK_SHAVE_AGE {
+            return false;
+        }
+
+        // The next shave date is 8 + (0.01 * age years after the last shave)
+        let next_shave_date: f64 = f64::from(self.age_last_shaved) + 8.0 + (day_age * 0.01);
+
+        day_age >= next_shave_date
     }
 
     pub fn is_alive(&self) -> bool {
