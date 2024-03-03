@@ -31,7 +31,7 @@ pub fn yak_can_produce_wool(age: u32, age_last_shaved: u32) -> bool {
     float_age >= next_shave_date
 }
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct Products {
     milk: u32,
     wool: u32,

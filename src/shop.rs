@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use crate::{Products, Yak, YakShopError};
 
-#[derive(Default, Deserialize, Debug)]
+#[derive(Default, Deserialize, Debug, Clone)]
 pub struct Shop {
     #[serde(rename = "$value")]
     yaks: Vec<Yak>,
@@ -62,6 +62,11 @@ impl Shop {
         }
 
         self.elapsed_days += days;
+    }
+
+    #[must_use]
+    pub fn yaks(&self) -> &[Yak] {
+        &self.yaks
     }
 }
 
