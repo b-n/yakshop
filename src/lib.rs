@@ -18,25 +18,12 @@ extern crate approx;
 mod shop;
 mod yak;
 
-use clap::Parser;
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 use std::path::PathBuf;
 
-use shop::Shop;
-use yak::{Products, Yak};
-
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-pub struct Args {
-    /// The location to the herd.xml file to use as a data source.
-    #[arg(required = true)]
-    pub herd: PathBuf,
-
-    /// The number of days to run the simulation for (max: U32_MAX)
-    #[arg(required = true)]
-    pub days: u32,
-}
+pub use shop::Shop;
+pub use yak::{Products, Yak};
 
 #[derive(Debug)]
 pub enum YakShopError {
@@ -58,15 +45,3 @@ impl Display for YakShopError {
 }
 
 impl Error for YakShopError {}
-
-fn main() -> Result<(), Box<dyn Error>> {
-    let args = Args::parse();
-
-    let mut shop = Shop::try_from(&args.herd)?;
-
-    shop.step_days(args.days);
-
-    println!("Day: {}\n\n{shop}", shop.elapsed_days);
-
-    Ok(())
-}

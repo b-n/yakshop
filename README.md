@@ -4,11 +4,13 @@ A small app for calculating yak outputs for a webshop
 
 ## Running
 
+### CLI
+
 ```console
-you@yakshop > ./yakshop --help
+you@yakshop > ./yakshop_cli --help
 A simple yak shop simulator
 
-Usage: yakshop <HERD>
+Usage: yakshop_cli <HERD>
 
 Arguments:
   <HERD>  The location to the herd.xml file to use as a data source
@@ -20,17 +22,17 @@ Options:
 
 Run development mode with a herd.xml file:
 
-`cargo run -- ./examples/herd.xml`
+`cargo run --bin yakshop_cli -- ./examples/herd.xml`
 
 ## Developing
 
 Run Yakshop directly with cargo:
 
-`cargo run -- ./examples/herd.xml`
+`cargo run --bin yakshop_cli -- ./examples/herd.xml`
 
 Alterantively, a development release can be built and run:
 
-`cargo build && ./target/debug/yakshop`
+`cargo build --bin yakshop_cli && ./target/debug/yakshop_cli`
 
 Tests can be run using the cargo test runner:
 
@@ -40,6 +42,6 @@ Tests can be run using the cargo test runner:
 
 Build a production release as follows:
 
-`cargo build --release`
+`cargo build --release --bin yakshop_cli`
 
-The binary will be output to `./target/release/yakshop`
+The binary will be output to `./target/release/yakshop_cli`

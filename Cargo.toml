@@ -16,3 +16,7 @@ clap = { version = "4.5.1", features = ['derive']}
 serde-xml-rs = "0.6.0"
 serde = { version = "1.0.197", features = ["derive"] }
 approx = "0.5.1"
+
+[[bin]]
+name = "yakshop_cli"
+path = "src/bin/cli.rs"
