@@ -32,6 +32,10 @@ Alterantively, a development release can be built and run:
 
 `cargo build && ./target/debug/yakshop`
 
+Tests can be run using the cargo test runner:
+
+`cargo test`
+
 ## Building
 
 Build a production release as follows:
