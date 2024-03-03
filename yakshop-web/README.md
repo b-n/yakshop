@@ -49,3 +49,19 @@ Run the final binary as follows:
 you@yakshop:yakshop-web > ../target/release/yakshop-web ../examples/herd.xml  
 Starting server on http://127.0.0.1:3000
 ```
+
+## Building and running with Docker
+
+The build needs to be triggered with a context of the root of this project.
+
+Assuming you are running the build from this directory, then:
+
+```console
+docker build -t yakshop-web -f Dockerfile ..
+```
+
+And run the container:
+
+```console
+docker run -v "$PWD/../:/app" -p 3000:3000 yakshop-web --http-host 0.0.0.0 "/app/examples/herd.xml" 
+```

@@ -59,3 +59,19 @@ Herd:
     Betty-2 8.13 years old
     Betty-3 9.63 years old
 ```
+
+## Building and running with Docker
+
+The build needs to be triggered with a context of the root of this project.
+
+Assuming you are running the build from this directory, then:
+
+```console
+docker build -t yakshop-cli -f Dockerfile ..
+```
+
+And to run the container:
+
+```console
+docker run -it --rm -v "$PWD/../:/app" yakshop-cli "/app/examples/herd.xml" 13
+```

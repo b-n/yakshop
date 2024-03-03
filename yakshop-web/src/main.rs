@@ -16,6 +16,7 @@
 use clap::Parser;
 use serde::Serialize;
 use std::error::Error;
+use std::net::IpAddr;
 use std::path::PathBuf;
 use warp::Filter;
 
@@ -62,6 +63,9 @@ impl From<&Products> for StockResponse {
 async fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
+    let http_host: IpAddr = args.http_host.parse()?;
+    let http_port = args.http_port;
+
     let shop = Shop::try_from(&args.herd)?;
 
     let home_page =
@@ -89,9 +93,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let routes = warp::get().and(home_page.or(stock).or(herd));
 
-    println!("Starting server on http://127.0.0.1:3000");
+    println!("Starting server on http://{http_host}:{http_port}");
 
-    warp::serve(routes).run(([127, 0, 0, 1], 3000)).await;
+    warp::serve(routes).run((http_host, http_port)).await;
 
     Ok(())
 }
