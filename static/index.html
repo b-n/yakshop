@@ -5,12 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Yakshop!</title>
+    <style>
+      code { white-space: pre; }
+    </style>
   </head>
   <body>
     <h1>Yakshop</h1>
     <p>Welcome to the yakshop!</p>
     <h2>Endpoints</h2>
-    <p><code>`/yakshop/herd/T`</code> where <code>`T`</code> is the day number you wish to view</p>
-    <p><code>`/yakshop/stock/T`</code> where <code>`T`</code> is the day number you wish to view</p>
+    <p><code>`GET /yakshop/herd/T`</code> where <code>`T`</code> is the day number you wish to view</p>
+    <p><code>`GET /yakshop/stock/T`</code> where <code>`T`</code> is the day number you wish to view</p>
+    <p>
+      <code>`POST /yakshop/stock/T`</code> where <code>`T`</code> is the day number you wish to view.<br />
+      A request body should be JSON (Content-Type: application/json) with the following structure:<br />
+      <code>
+      {
+        "customer" : "Medvedev",
+        "order" : {
+          "milk" : 1100,
+          "skins" : 3
+        }
+      }
+      </code>
+    </p>
+    <dd>
   </body>
 </html>

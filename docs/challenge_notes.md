@@ -37,9 +37,7 @@ The following are the things I would focus on next (in no particular order):
 - Build environment isolation (e.g. Dockerfile etc)
 - Further validation on the XML input document - it currently accepts any XML
   tags, so long as they have the required attributes.
-- The mutation endpoint would be implemented
-  - with a database instead of loading state from a herd.xml file.
-  - with a lot of tests for fringe cases.
+- Likely a database (assuming it was ever needed).
 
 ## Specific design decisions
 

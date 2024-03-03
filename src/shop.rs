@@ -68,6 +68,30 @@ impl Shop {
     pub fn yaks(&self) -> &[Yak] {
         &self.yaks
     }
+
+    #[must_use]
+    pub fn consume_products(
+        &mut self,
+        milk: Option<f64>,
+        wool: Option<u32>,
+    ) -> (Option<f64>, Option<u32>) {
+        // A naive, but working approach of product consumption
+        let mut consumed_milk: Option<f64> = None;
+        if let Some(milk) = milk {
+            if self.produced_products.milk() >= milk {
+                consumed_milk = Some(milk);
+            }
+        }
+
+        let mut consumed_wool: Option<u32> = None;
+        if let Some(wool) = wool {
+            if self.produced_products.wool() >= wool {
+                consumed_wool = Some(wool);
+            }
+        }
+
+        (consumed_milk, consumed_wool)
+    }
 }
 
 #[cfg(test)]
