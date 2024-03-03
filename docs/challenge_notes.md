@@ -40,12 +40,6 @@ The following are the things I would focus on next (in no particular order):
   is directly serializing the object which adds complexity to the shared code.
 - Further validation on the XML input document - it currently accepts any XML
   tags, so long as they have the required attributes.
-- The project structure could/should possibly be broken into:
-  - Yakshop Lib (or just the root package)
-  - Yakshop CLI (the CLI frontend)
-  - Yakshop Web (the Web frontend)
-  - Reasons: The CLI/Web have fairly separate concerns, and documenting in the
-    same source code at present is clumsy without any real benefit at present. 
 - The mutation endpoint would be implemented
   - with a database instead of loading state from a herd.xml file.
   - with a lot of tests for fringe cases.

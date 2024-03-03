@@ -10,6 +10,8 @@
 #![warn(trivial_casts, trivial_numeric_casts)]
 #![warn(unused_qualifications)]
 #![warn(variant_size_difference)]
+// Issue with the warp crate
+#![allow(clippy::multiple_crate_versions)]
 
 use clap::Parser;
 use serde::Serialize;

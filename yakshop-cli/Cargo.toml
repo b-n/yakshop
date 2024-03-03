@@ -1,0 +1,15 @@
+[package]
+name = "yakshop-cli"
+version = "0.1.0"
+description = "A CLI for the Yak Shop"
+categories = ["simulation"]
+readme = "README.md"
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+
+[dependencies]
+clap = { version = "4.5.1", features = ['derive']}
+yakshop = { path = "../" }

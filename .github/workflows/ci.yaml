@@ -26,10 +26,10 @@ jobs:
           toolchain: "1.76.0"
 
       - name: Compile CLI
-        run: cargo build --verbose --bin yakshop_cli
+        run: cargo build --verbose -p yakshop-cli
 
       - name: Compile Web
-        run: cargo build --verbose --bin yakshop_web --features="web"
+        run: cargo build --verbose -p yakshop-web
 
       - name: Compile tests
         run: cargo test --workspace --no-run

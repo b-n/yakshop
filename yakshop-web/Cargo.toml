@@ -1,0 +1,18 @@
+[package]
+name = "yakshop-web"
+version = "0.1.0"
+description = "A Web Server for the Yak Shop"
+categories = ["simulation"]
+readme = "README.md"
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+keywords.workspace = true
+
+[dependencies]
+clap = { version = "4.5.1", features = ['derive']}
+serde = { version = "1.0.197", features = ["derive"] }
+warp = { version = "0.3.6" }
+tokio = { version = "1.36.0", features = ["sync", "macros", "rt-multi-thread"] }
+yakshop = { path = "../" }

@@ -1200,6 +1200,23 @@ dependencies = [
  "clap",
  "serde",
  "serde-xml-rs",
+]
+
+[[package]]
+name = "yakshop-cli"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "yakshop",
+]
+
+[[package]]
+name = "yakshop-web"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "serde",
  "tokio",
  "warp",
+ "yakshop",
 ]

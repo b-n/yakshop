@@ -1,37 +1,31 @@
 [package]
 name = "yakshop"
 version = "0.1.0"
-edition = "2021"
-keywords = ["yak", "shop", "simulator"]
 categories = ["command-line-utilities", "simulation"]
-license = "MIT"
 readme = "README.md"
-repository = "https://www.github.com/b-n/yakshop"
-homepage = "https://www.github.com/b-n/yakshop"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords.workspace = true
 description = "A simple yak shop simulator"
-exclude = ["docs"]
+exclude = ["/.github", "/docs"]
+
+[workspace]
+members = [
+  "yakshop-cli",
+  "yakshop-web"
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+homepage = "https://www.github.com/b-n/yakshop"
+repository = "https://www.github.com/b-n/yakshop"
+keywords = ["yak", "shop", "simulator"]
 
 [dependencies]
 approx = "0.5.1"
 clap = { version = "4.5.1", features = ['derive']}
 serde = { version = "1.0.197", features = ["derive"] }
 serde-xml-rs = "0.6.0"
-warp = { version = "0.3.6", optional = true }
-tokio = { version = "1.36.0", optional = true, features = ["sync", "macros", "rt-multi-thread"] }
-
-[features]
-default = []
-web = [
-  "default",
-  "dep:warp",
-  "dep:tokio"
-]
-
-[[bin]]
-name = "yakshop_cli"
-path = "src/bin/cli.rs"
-
-[[bin]]
-name = "yakshop_web"
-path = "src/bin/web.rs"
-required-features = ["web"]
