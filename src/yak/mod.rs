@@ -61,10 +61,12 @@ impl Yak {
         Some(products)
     }
 
+    #[must_use]
     pub fn is_alive(&self) -> bool {
         self.age < MAX_YAK_AGE
     }
 
+    #[must_use]
     pub fn year_age(&self) -> f64 {
         f64::from(self.age) / DAYS_IN_YAK_YEAR
     }

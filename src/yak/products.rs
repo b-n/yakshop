@@ -66,10 +66,12 @@ impl Products {
         self.wool += wool;
     }
 
+    #[must_use]
     pub fn milk(&self) -> f64 {
         f64::from(self.milk) / f64::from(MILK_FLOATING_POINT_ADJUSTMENT)
     }
 
+    #[must_use]
     pub fn wool(&self) -> u32 {
         self.wool
     }
