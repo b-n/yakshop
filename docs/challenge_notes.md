@@ -1,0 +1,58 @@
+# Challenge Notes
+
+Some small notes with regards to some decisions that were made
+
+## My background and/or some context thereof
+
+In recent years, I've mostly been working on:
+
+- Existing Ruby apps built in Ruby on Rails
+- Working with Rust for open source projects
+- Working as a platform engineer recently, which (in my current job) means a
+  more YAML engineering, and less coding time.
+
+With that:
+
+- This is my first time using `warp` and working on Rust web servers in general.
+  I'm quite happy/surprised how easy building a very very simple web server in
+  this regard.
+- I haven't had to deal much with floating point math (Ruby hides this from
+  developers), but I enjoyed the challenge and I think handling everything as
+  ints and later converting to displayed float values is sensible (although it
+  of course adds some complexity to the code)
+
+## The next iteration
+
+The following are the things I would focus on next (in no particular order):
+
+- Observability (e.g. logs, metrics, etc) - Although I would likely look in the
+  direction of https://github.com/cloudflare/foundations
+- Add some tests for performance.
+  - The algorithm for "Next shave date" is fairly naive at present, even though
+    it is safe. The next shave date could be specified at time of shave which
+    would reduce some math on each day iteration.
+  - The algorithm for Milk production is also fairly naive. I am fairly sure
+    milk production for a given time period can be achieved in a single math
+    call instead of iterating.
+- Build environment isolation (e.g. Dockerfile etc)
+- Standardise the way I'm currently serializing objects for response -
+  Specifically one of the responses transposes into a response type, the other
+  is directly serializing the object which adds complexity to the shared code.
+- Further validation on the XML input document - it currently accepts any XML
+  tags, so long as they have the required attributes.
+- The project structure could/should possibly be broken into:
+  - Yakshop Lib (or just the root package)
+  - Yakshop CLI (the CLI frontend)
+  - Yakshop Web (the Web frontend)
+  - Reasons: The CLI/Web have fairly separate concerns, and documenting in the
+    same source code at present is clumsy without any real benefit at present. 
+- The mutation endpoint would be implemented
+  - with a database instead of loading state from a herd.xml file.
+  - with a lot of tests for fringe cases.
+
+## Specific design decisions
+
+- Milk/Wool production was explicitly denormalised. The requirements are
+  calling for a specific set of metrics, and normalising this data would lead
+  to some performance penalties for an animal which can produce a finite set of
+  products.
