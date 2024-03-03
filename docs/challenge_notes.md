@@ -35,9 +35,6 @@ The following are the things I would focus on next (in no particular order):
     milk production for a given time period can be achieved in a single math
     call instead of iterating.
 - Build environment isolation (e.g. Dockerfile etc)
-- Standardise the way I'm currently serializing objects for response -
-  Specifically one of the responses transposes into a response type, the other
-  is directly serializing the object which adds complexity to the shared code.
 - Further validation on the XML input document - it currently accepts any XML
   tags, so long as they have the required attributes.
 - The mutation endpoint would be implemented
@@ -50,3 +47,7 @@ The following are the things I would focus on next (in no particular order):
   calling for a specific set of metrics, and normalising this data would lead
   to some performance penalties for an animal which can produce a finite set of
   products.
+- Serializing web responses is done from specific response objects. There are a
+  number of ways to do this (e.g. putting serde serialization statements on the
+  underlying objects), but this is "a way" and is consistent with not adding
+  to the shared library that are not used by all consumers.

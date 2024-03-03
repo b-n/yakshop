@@ -37,8 +37,25 @@ pub struct Args {
 }
 
 #[derive(Serialize)]
+struct YakResponse {
+    name: String,
+    age: f64,
+    age_last_shaved: f64,
+}
+
+impl From<Yak> for YakResponse {
+    fn from(yak: Yak) -> Self {
+        YakResponse {
+            name: yak.name().to_string(),
+            age: yak.year_age(),
+            age_last_shaved: yak.year_age_last_shaved(),
+        }
+    }
+}
+
+#[derive(Serialize)]
 struct HerdResponse {
-    herd: Vec<Yak>,
+    herd: Vec<YakResponse>,
 }
 
 #[derive(Serialize)]
@@ -85,8 +102,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         warp::path!("yakshop" / "herd" / u32).map(move |days: u32| {
             let mut shop = shop.clone();
             shop.step_days(days);
+
+            let yaks = shop.yaks().iter().map(|yak| YakResponse::from(yak.clone()));
             warp::reply::json(&HerdResponse {
-                herd: shop.yaks().to_vec(),
+                herd: yaks.collect(),
             })
         })
     };

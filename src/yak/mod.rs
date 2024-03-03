@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::fmt::{self, Display, Formatter};
 
 mod products;
@@ -6,25 +6,22 @@ mod serialization;
 
 pub use products::Products;
 use products::{yak_can_produce_wool, yak_milk_production};
-use serialization::{yak_age_to_float_years, yak_float_years_to_days};
+use serialization::yak_float_years_to_days;
 
 /// The number of days in a yak year.
 const DAYS_IN_YAK_YEAR: f64 = 100.0;
 /// A yak lives for 10 years, there are 100 days in a yak year.
 const MAX_YAK_AGE: u32 = 1_000;
 
-#[derive(Deserialize, Debug, Serialize, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 #[allow(never_read)]
 pub struct Yak {
     name: String,
     /// The age of the yak in yak years
-    #[serde(
-        deserialize_with = "yak_float_years_to_days",
-        serialize_with = "yak_age_to_float_years"
-    )]
+    #[serde(deserialize_with = "yak_float_years_to_days")]
     age: u32,
     /// The age of the yak when it was last shaved
-    #[serde(skip_deserializing, serialize_with = "yak_age_to_float_years")]
+    #[serde(skip_deserializing)]
     age_last_shaved: u32,
 }
 
@@ -67,8 +64,18 @@ impl Yak {
     }
 
     #[must_use]
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    #[must_use]
     pub fn year_age(&self) -> f64 {
         f64::from(self.age) / DAYS_IN_YAK_YEAR
+    }
+
+    #[must_use]
+    pub fn year_age_last_shaved(&self) -> f64 {
+        f64::from(self.age_last_shaved) / DAYS_IN_YAK_YEAR
     }
 }
 

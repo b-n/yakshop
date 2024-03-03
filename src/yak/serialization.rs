@@ -1,4 +1,4 @@
-use serde::{Deserialize, Deserializer, Serializer};
+use serde::{Deserialize, Deserializer};
 
 use super::DAYS_IN_YAK_YEAR;
 
@@ -26,13 +26,4 @@ where
             Ok(years as u32)
         }
     }
-}
-
-#[allow(clippy::trivially_copy_pass_by_ref)]
-pub fn yak_age_to_float_years<S>(age: &u32, serializer: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
-{
-    let years = f64::from(*age) / DAYS_IN_YAK_YEAR;
-    serializer.serialize_f64(years)
 }
