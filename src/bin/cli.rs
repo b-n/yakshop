@@ -24,7 +24,7 @@ pub struct Args {
     #[arg(required = true)]
     pub herd: PathBuf,
 
-    /// The number of days to run the simulation for (max: U32_MAX)
+    /// The number of days to run the simulation for (max: `u32::MAX`)
     #[arg(required = true)]
     pub days: u32,
 }
