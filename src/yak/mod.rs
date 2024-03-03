@@ -6,13 +6,12 @@ mod products;
 
 pub use products::Products;
 
-const DAYS_IN_YAK_YEAR: f64 = 100.0;
+use products::{yak_can_produce_wool, yak_milk_production};
 
+/// The number of days in a yak year.
+const DAYS_IN_YAK_YEAR: f64 = 100.0;
 /// A yak lives for 10 years, there are 100 days in a yak year.
 const MAX_YAK_AGE: u32 = 1_000;
-
-/// A yak can only be shaved after it is 100 days (1 year) old.
-const MIN_YAK_SHAVE_AGE: u32 = 100;
 
 fn yak_float_years_to_days<'de, D>(deserializer: D) -> Result<u32, D::Error>
 where
@@ -73,32 +72,16 @@ impl Yak {
         let mut products = Products::default();
 
         for _ in 0..days {
-            products.milk += self.produce_milk();
-            if self.can_produce_wool() {
+            products.add_milk(yak_milk_production(self.age));
+            if yak_can_produce_wool(self.age, self.age_last_shaved) {
                 self.age_last_shaved = self.age;
-                products.wool += 1;
+                products.add_wool(1);
             }
 
             self.age += 1;
         }
 
         Some(products)
-    }
-
-    fn produce_milk(&self) -> f64 {
-        50.0 - (f64::from(self.age) * 0.03)
-    }
-
-    fn can_produce_wool(&self) -> bool {
-        let day_age = f64::from(self.age);
-        if self.age < MIN_YAK_SHAVE_AGE {
-            return false;
-        }
-
-        // The next shave date is 8 + (0.01 * age years after the last shave)
-        let next_shave_date: f64 = f64::from(self.age_last_shaved) + 8.0 + (day_age * 0.01);
-
-        day_age >= next_shave_date
     }
 
     pub fn is_alive(&self) -> bool {
@@ -112,6 +95,7 @@ impl Yak {
 
 #[cfg(test)]
 mod tests {
+    use super::products::MIN_YAK_SHAVE_AGE;
     use super::*;
 
     fn default_yak() -> Yak {
@@ -188,8 +172,8 @@ mod tests {
         let products = yak.step_days(1).unwrap();
 
         assert_eq!(yak.age, 1);
-        assert_ulps_eq!(products.milk, 50.0);
-        assert_eq!(products.wool, 0);
+        assert_ulps_eq!(products.milk(), 50.0);
+        assert_eq!(products.wool(), 0);
     }
 
     #[test]
@@ -199,8 +183,8 @@ mod tests {
         let products = yak.step_days(1).unwrap();
 
         assert_eq!(yak.age, MIN_YAK_SHAVE_AGE + 1);
-        assert_ulps_eq!(products.milk, 47.0);
-        assert_eq!(products.wool, 1);
+        assert_ulps_eq!(products.milk(), 47.0);
+        assert_eq!(products.wool(), 1);
     }
 
     #[test]
@@ -209,8 +193,8 @@ mod tests {
         let products = yak.step_days(2).unwrap();
 
         assert_eq!(yak.age, 2);
-        assert_ulps_eq!(products.milk, 50.0 + 49.97);
-        assert_eq!(products.wool, 0);
+        assert_ulps_eq!(products.milk(), 50.0 + 49.97);
+        assert_eq!(products.wool(), 0);
     }
 
     #[test]
@@ -220,8 +204,8 @@ mod tests {
         let products = yak.step_days(2).unwrap();
 
         assert_eq!(yak.age, MIN_YAK_SHAVE_AGE + 2);
-        assert_ulps_eq!(products.milk, 47.0 + 46.97);
-        assert_eq!(products.wool, 1);
+        assert_ulps_eq!(products.milk(), 47.0 + 46.97);
+        assert_eq!(products.wool(), 1);
     }
 
     #[test]
@@ -235,6 +219,6 @@ mod tests {
         let products = yak.step_days(11).unwrap();
 
         assert_eq!(yak.age, MIN_YAK_SHAVE_AGE + 11);
-        assert_eq!(products.wool, 2);
+        assert_eq!(products.wool(), 2);
     }
 }

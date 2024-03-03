@@ -22,7 +22,8 @@ impl Display for Shop {
     {:.3} liters of milk
     {} skins of wool
 Herd:"#,
-            self.produced_products.milk, self.produced_products.wool
+            self.produced_products.milk(),
+            self.produced_products.wool()
         )?;
 
         for yak in &self.yaks {
@@ -107,8 +108,8 @@ mod tests {
         shop.step_days(13);
 
         assert_eq!(shop.elapsed_days, 13);
-        assert_ulps_eq!(shop.produced_products.milk, 1104.480);
-        assert_eq!(shop.produced_products.wool, 3);
+        assert_ulps_eq!(shop.produced_products.milk(), 1104.480);
+        assert_eq!(shop.produced_products.wool(), 3);
     }
 
     #[test]
@@ -118,7 +119,7 @@ mod tests {
         shop.step_days(14);
 
         assert_eq!(shop.elapsed_days, 14);
-        assert_ulps_eq!(shop.produced_products.milk, 1188.810);
-        assert_eq!(shop.produced_products.wool, 4);
+        assert_ulps_eq!(shop.produced_products.milk(), 1188.810);
+        assert_eq!(shop.produced_products.wool(), 4);
     }
 }
