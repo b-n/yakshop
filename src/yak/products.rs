@@ -7,7 +7,9 @@ const MILK_FLOATING_POINT_ADJUSTMENT: u32 = 100;
 pub const MIN_YAK_SHAVE_AGE: u32 = 100;
 
 pub fn yak_milk_production(age: u32) -> u32 {
-    5_000 - age * 3
+    // SAFETY: yaks should die before they 1667 days old, however if technology advances and they
+    // are able to stay alive past that, we should ensure they don't start consuming milk instead.
+    5_000u32.saturating_sub(age * 3)
 }
 
 pub fn yak_can_produce_wool(age: u32, age_last_shaved: u32) -> bool {
@@ -65,5 +67,21 @@ impl Products {
 
     pub fn wool(&self) -> u32 {
         self.wool
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_yak_milk_production() {
+        assert_eq!(yak_milk_production(0), 5_000);
+        assert_eq!(yak_milk_production(100), 5_000 - 3 * 100);
+        // Last day of milk production
+        assert_eq!(yak_milk_production(1666), 2);
+        // Every day after that is 0
+        assert_eq!(yak_milk_production(1667), 0);
+        assert_eq!(yak_milk_production(1668), 0);
     }
 }
