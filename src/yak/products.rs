@@ -6,10 +6,14 @@ const MILK_FLOATING_POINT_ADJUSTMENT: u32 = 100;
 /// A yak can only be shaved after it is 100 days (1 year) old.
 pub const MIN_YAK_SHAVE_AGE: u32 = 100;
 
+const BASE_MILK_PRODUCTION: u32 = 5_000;
+const MINIMUM_WOOL_SHAVING_PERIOD: f64 = 8.00;
+const WOOL_SHAVING_AGE_ADJUSTMENT: f64 = 0.01;
+
 pub fn yak_milk_production(age: u32) -> u32 {
     // SAFETY: yaks should die before they 1667 days old, however if technology advances and they
     // are able to stay alive past that, we should ensure they don't start consuming milk instead.
-    5_000u32.saturating_sub(age * 3)
+    BASE_MILK_PRODUCTION.saturating_sub(age * 3)
 }
 
 pub fn yak_can_produce_wool(age: u32, age_last_shaved: u32) -> bool {
@@ -18,12 +22,13 @@ pub fn yak_can_produce_wool(age: u32, age_last_shaved: u32) -> bool {
     }
 
     let float_age = f64::from(age);
-    let float_age_last_shaved = f64::from(age_last_shaved);
 
     // The next shave date is 8 + (0.01 * age years after the last shave)
-    let next_shave_date: f64 = float_age_last_shaved + 8.0 + (float_age * 0.01);
+    let next_shave_date: f64 = f64::from(age_last_shaved)
+        + MINIMUM_WOOL_SHAVING_PERIOD
+        + (float_age * WOOL_SHAVING_AGE_ADJUSTMENT);
 
-    f64::from(age) >= next_shave_date
+    float_age >= next_shave_date
 }
 
 #[derive(Default, Debug)]
