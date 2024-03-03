@@ -81,8 +81,6 @@ Run the final binary as follows:
 
 ```console
 you@yakshop > ./target/release/yakshop_cli ./examples/herd.xml 13        
-Day: 13
-
 In Stock:
     1104.480 liters of milk
     3 skins of wool

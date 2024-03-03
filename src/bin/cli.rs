@@ -39,7 +39,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     shop.step_days(args.days);
 
-    println!("Day: {}\n\n{shop}", shop.elapsed_days);
+    println!("{shop}");
 
     Ok(())
 }
