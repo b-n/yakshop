@@ -39,6 +39,7 @@ impl Display for Yak {
 
 impl Yak {
     pub fn step_days(&mut self, days: u32) -> Option<Products> {
+        // Return early if nothing to do
         if !self.is_alive() {
             return None;
         }
@@ -46,6 +47,10 @@ impl Yak {
         let mut products = Products::default();
 
         for _ in 0..days {
+            // yak = dead = no milk/wool
+            if !self.is_alive() {
+                break;
+            }
             products.add_milk(yak_milk_production(self.age));
             if yak_can_produce_wool(self.age, self.age_last_shaved) {
                 self.age_last_shaved = self.age;
@@ -150,6 +155,25 @@ mod tests {
         yak.step_days(1);
         assert_eq!(yak.age, 1000);
         assert!(!yak.is_alive());
+    }
+
+    #[test]
+    fn test_yak_no_production_in_multiple_days() {
+        let mut yak = default_yak();
+
+        yak.age = 998;
+        assert!(yak.is_alive());
+
+        let result = yak.step_days(1);
+        assert_eq!(yak.age, 999);
+        assert_eq!(result, Some(Products::new(2006, 1)));
+
+        // Now step by many days.
+        // The Yak should still produce milk for the last day it is alive, but nothing after that.
+        let result = yak.step_days(100);
+        assert_eq!(yak.age, 1000);
+        assert!(!yak.is_alive());
+        assert_eq!(result, Some(Products::new(2003, 0)));
     }
 
     #[test]

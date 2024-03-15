@@ -31,7 +31,7 @@ pub fn yak_can_produce_wool(age: u32, age_last_shaved: u32) -> bool {
     float_age >= next_shave_date
 }
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, Eq, PartialEq)]
 pub struct Products {
     milk: u32,
     wool: u32,
@@ -58,6 +58,11 @@ impl AddAssign<Products> for Products {
 }
 
 impl Products {
+    #[must_use]
+    pub fn new(milk: u32, wool: u32) -> Self {
+        Products { milk, wool }
+    }
+
     pub fn add_milk(&mut self, milk: u32) {
         self.milk += milk;
     }
